@@ -18,8 +18,8 @@ export async function crearUsuarioBasico(req: Request, res: Response) {
 
     // Validaciones básicas
     if (!email || !telefono || !password || !role) {
-      return res.status(400).json({ 
-        message: 'Todos los campos son requeridos: email, telefono, password, role' 
+      return res.status(400).json({
+        message: 'Todos los campos son requeridos: email, telefono, password, role'
       })
     }
 
@@ -79,8 +79,8 @@ export async function registrarMetahumano(req: Request, res: Response) {
 
     // Validaciones básicas
     if (!email || !telefono || !password || !nombre || !alias || !origen) {
-      return res.status(400).json({ 
-        message: 'Todos los campos son requeridos: email, telefono, password, nombre, alias, origen' 
+      return res.status(400).json({
+        message: 'Todos los campos son requeridos: email, telefono, password, nombre, alias, origen'
       })
     }
 
@@ -118,9 +118,9 @@ export async function registrarMetahumano(req: Request, res: Response) {
 
     // Generar JWT
     const token = jwt.sign(
-      { 
-        usuarioId: usuario.id, 
-        email: usuario.email, 
+      {
+        usuarioId: usuario.id,
+        email: usuario.email,
         role: usuario.role,
         perfilId: metahumano.id,
         perfil: 'metahumano'
@@ -183,8 +183,8 @@ export async function registrarBurocrata(req: Request, res: Response) {
 
     // Validaciones básicas
     if (!email || !telefono || !password || !nombre || !alias || !origen) {
-      return res.status(400).json({ 
-        message: 'Todos los campos son requeridos: email, telefono, password, nombre, alias, origen' 
+      return res.status(400).json({
+        message: 'Todos los campos son requeridos: email, telefono, password, nombre, alias, origen'
       })
     }
 
@@ -222,9 +222,9 @@ export async function registrarBurocrata(req: Request, res: Response) {
 
     // Generar JWT
     const token = jwt.sign(
-      { 
-        usuarioId: usuario.id, 
-        email: usuario.email, 
+      {
+        usuarioId: usuario.id,
+        email: usuario.email,
         role: usuario.role,
         perfilId: burocrata.id,
         perfil: 'burocrata'
@@ -286,8 +286,8 @@ export async function registrarAdmin(req: Request, res: Response) {
 
     // Validaciones básicas
     if (!email || !telefono || !password || !nombre) {
-      return res.status(400).json({ 
-        message: 'Todos los campos son requeridos: email, telefono, password, nombre' 
+      return res.status(400).json({
+        message: 'Todos los campos son requeridos: email, telefono, password, nombre'
       })
     }
 
@@ -318,9 +318,9 @@ export async function registrarAdmin(req: Request, res: Response) {
 
     // Generar JWT
     const token = jwt.sign(
-      { 
-        usuarioId: usuario.id, 
-        email: usuario.email, 
+      {
+        usuarioId: usuario.id,
+        email: usuario.email,
         role: usuario.role,
         nombre
       },
@@ -431,9 +431,9 @@ export async function login(req: Request, res: Response) {
 
     // Generar JWT
     const token = jwt.sign(
-      { 
-        usuarioId: usuario.id, 
-        email: usuario.email, 
+      {
+        usuarioId: usuario.id,
+        email: usuario.email,
         role: usuario.role,
         perfilId,
         perfil
@@ -536,7 +536,7 @@ export async function actualizarContacto(req: Request, res: Response) {
     const { email, telefono } = req.body
 
     const usuario = await em.findOne(Usuario, { id: usuarioId })
-    
+
     if (!usuario) {
       return res.status(404).json({ message: 'Usuario no encontrado' })
     }
@@ -577,7 +577,7 @@ export async function actualizarContacto(req: Request, res: Response) {
 export async function listarUsuarios(req: Request, res: Response) {
   try {
     const { page = 1, limit = 10, role } = req.query
-    
+
     const where: any = {}
     if (role && (role === 'METAHUMANO' || role === 'BUROCRATA')) {
       where.role = role
@@ -645,7 +645,7 @@ export async function logout(req: Request, res: Response) {
 export async function obtenerUsuarioPorId(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    
+
     if (isNaN(id)) {
       return res.status(400).json({ message: 'ID inválido' })
     }
@@ -696,5 +696,34 @@ export async function obtenerUsuarioPorId(req: Request, res: Response) {
   } catch (error: any) {
     console.error('Error al obtener usuario:', error)
     res.status(500).json({ message: 'Error interno del servidor' })
+  }
+}
+
+/**
+ * Eliminar todos los usuarios (útil para desarrollo/testing)
+ * ⚠️ ADVERTENCIA: Esta operación eliminará TODOS los usuarios y sus perfiles asociados
+ */
+export async function eliminarTodosLosUsuarios(req: Request, res: Response) {
+  try {
+    // Cargar usuarios con sus perfiles relacionados
+    const usuarios = await em.find(Usuario, {}, {
+      populate: ['metahumano', 'burocrata']
+    })
+
+    // Contar antes de eliminar
+    const count = usuarios.length
+
+    // Eliminar todos los usuarios con sus perfiles
+    // MikroORM eliminará los perfiles relacionados automáticamente
+    await em.removeAndFlush(usuarios)
+
+    res.json({
+      message: `Se eliminaron exitosamente ${count} usuarios y sus perfiles asociados`,
+      count
+    })
+
+  } catch (error: any) {
+    console.error('Error al eliminar todos los usuarios:', error)
+    res.status(500).json({ message: 'Error interno del servidor', error: error.message })
   }
 }

@@ -70,6 +70,44 @@ POST http://localhost:3000/api/usuarios/logout
 ###
 
 ##################################################
+### ⚠️ ELIMINAR TODOS LOS USUARIOS (DESARROLLO)
+##################################################
+
+### ⚠️ PELIGRO: Eliminar TODOS los usuarios y perfiles
+# Esto eliminará todos los usuarios, metahumanos y burócratas
+# de la base de datos. Úsalo solo en desarrollo/testing.
+# @name deleteAllUsers
+DELETE http://localhost:3000/api/usuarios
+
+###
+
+##################################################
+### 🔄 ACTUALIZAR ESTADO DE USUARIO
+##################################################
+
+### Activar usuario (cambiar estado a true)
+# @name activateUser
+PATCH http://localhost:3000/api/usuarios/1/estado
+Content-Type: application/json
+
+{
+  "estado": true
+}
+
+###
+
+### Desactivar usuario (cambiar estado a false)
+# @name deactivateUser
+PATCH http://localhost:3000/api/usuarios/1/estado
+Content-Type: application/json
+
+{
+  "estado": false
+}
+
+###
+
+##################################################
 ### 🍪 CONSULTAR COOKIES EN CONSOLA DEL NAVEGADOR
 ##################################################
 

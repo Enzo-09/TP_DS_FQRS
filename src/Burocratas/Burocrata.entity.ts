@@ -5,22 +5,27 @@ import { Usuario } from "../auth/usuario.entity.js";
 import { Cascade, Collection, Entity, OneToMany, OneToOne, Property, Rel } from "@mikro-orm/core";
 
 @Entity()
-export class Burocrata extends BaseEntity{
-  @Property({nullable:false})
-  nombre!:string
+export class Burocrata extends BaseEntity {
+  @Property({ nullable: false })
+  nombre!: string
 
-  @Property({nullable:false})
-  alias!:string
+  @Property({ nullable: false })
+  alias!: string
 
-  @Property({nullable:false})
-  origen!:string
+  @Property({ nullable: false })
+  origen!: string
 
   // Relación OneToOne con Usuario (obligatoria y única)
-  @OneToOne({ entity: () => Usuario, inversedBy: 'burocrata', owner: true })
+  @OneToOne({
+    entity: () => Usuario,
+    inversedBy: 'burocrata',
+    owner: true,
+    onDelete: 'cascade'
+  })
   usuario!: Rel<Usuario>
-  
-  @OneToMany(()=>Carpeta, carpeta => carpeta.burocrata,{
-    cascade : [Cascade.ALL]
+
+  @OneToMany(() => Carpeta, carpeta => carpeta.burocrata, {
+    cascade: [Cascade.ALL]
   })
   carpetas = new Collection<Carpeta>(this)
 

@@ -17,13 +17,14 @@ import cors from 'cors'
 import { requireAuth } from './auth/auth.middleware.js';
 
 // Importar controladores para rutas de usuarios legacy
-import { 
-  crearUsuarioBasico as registrarUsuario, 
-  login as loginUsuario, 
-  obtenerPerfil as obtenerUsuarioActual, 
+import {
+  crearUsuarioBasico as registrarUsuario,
+  login as loginUsuario,
+  obtenerPerfil as obtenerUsuarioActual,
   logout as logoutUsuario,
   listarUsuarios as obtenerTodosLosUsuarios,
-  obtenerUsuarioPorId
+  obtenerUsuarioPorId,
+  eliminarTodosLosUsuarios
 } from './auth/usuario.controller.js'
 
 const app = express()
@@ -32,7 +33,7 @@ app.use(cors({
   credentials: true // permitir envío de cookies al front
 }))
 app.use(express.json())
-app.use(cookieParser()) 
+app.use(cookieParser())
 
 // Contexto de EntityManager por request
 app.use((req, res, next) => {
@@ -46,6 +47,7 @@ usuariosLegacyRouter.get('/:id(\\d+)', obtenerUsuarioPorId);
 usuariosLegacyRouter.post('/register', registrarUsuario)
 usuariosLegacyRouter.post('/login', loginUsuario)
 usuariosLegacyRouter.post('/logout', logoutUsuario)
+usuariosLegacyRouter.delete('/', eliminarTodosLosUsuarios) // ⚠️ Eliminar TODOS los usuarios
 
 // Rutas principales
 app.use('/api/usuarios', usuariosLegacyRouter)
@@ -56,7 +58,7 @@ app.use('/api/burocratas', burocratasRouter)
 app.use('/api/multas', multasRouter)
 app.use('/api/evidencias', evidenciaRouter)
 app.use('/api/carpetas', carpetaRouter)
-app.use('/api/auth', usuarioRouter) 
+app.use('/api/auth', usuarioRouter)
 app.use('/api/villanos', villanoRoutes)
 
 // 404 handler

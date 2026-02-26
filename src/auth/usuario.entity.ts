@@ -38,6 +38,9 @@ export class Usuario extends BaseEntity {
   @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
+
+
+
   // Relaciones One-to-One opcionales
   @OneToOne({ entity: () => 'Metahumano', mappedBy: 'usuario', nullable: true })
   metahumano?: Rel<any>
@@ -52,7 +55,7 @@ export class Usuario extends BaseEntity {
     if (this.metahumano && this.burocrata) {
       throw new Error('Un usuario no puede tener ambos perfiles (metahumano y burocrata)')
     }
-    
+
     // Validar que el role coincida con el perfil existente
     if (this.role === UserRole.METAHUMANO && this.burocrata) {
       throw new Error('Usuario con role METAHUMANO no puede tener perfil de burocrata')

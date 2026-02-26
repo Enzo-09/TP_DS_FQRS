@@ -8,7 +8,7 @@ import {
   Rel,
 } from '@mikro-orm/core'
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
-import { MetaPoder } from  '../metaPoder/metaPoder.entity.js'
+import { MetaPoder } from '../metaPoder/metaPoder.entity.js'
 import { Carpeta } from '../carpeta/carpeta.entity.js'
 import { Usuario } from '../auth/usuario.entity.js'
 
@@ -31,10 +31,15 @@ export class Metahumano extends BaseEntity {
   origen!: string
 
   // Relación OneToOne con Usuario (obligatoria y única)
-  @OneToOne({ entity: () => Usuario, inversedBy: 'metahumano', owner: true })
+  @OneToOne({
+    entity: () => Usuario,
+    inversedBy: 'metahumano',
+    owner: true,
+    onDelete: 'cascade'
+  })
   usuario!: Rel<Usuario>
 
-  @OneToMany(()=>Carpeta, carpeta => carpeta.metahumano, {
+  @OneToMany(() => Carpeta, carpeta => carpeta.metahumano, {
     cascade: [Cascade.ALL]
   })
   carpetas = new Collection<Carpeta>(this)

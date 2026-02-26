@@ -1,0 +1,228 @@
+### 👔 API BURÓCRATAS
+### Base URL: http://localhost:3000/api/burocratas
+
+##################################################
+### 0️⃣ VERIFICAR USUARIOS DISPONIBLES
+##################################################
+
+### Listar todos los usuarios (para ver qué usuarios existen)
+# @name getAllUsers
+GET http://localhost:3000/api/usuarios
+
+###
+
+### Crear usuario admin de prueba
+# @name registerUserAdmin
+POST http://localhost:3000/api/usuarios/register
+Content-Type: application/json
+
+{
+  "email": "admin@ejemplo.com",
+  "telefono": "+1234567890",
+  "password": "supersegura",
+  "role": "ADMIN"
+}
+
+##################################################
+### 1️⃣ CREAR PERFIL DE BURÓCRATA (NUEVO FLUJO)
+##################################################
+
+### PASO 1: Crear usuario con role BUROCRATA primero
+# @name createUser
+POST http://localhost:3000/api/usuarios/register
+Content-Type: application/json
+
+{
+  "nomUsuario": "amandawaller",
+  "mail": "amanda.waller@argus.gov",
+  "contrasena": "wallsecret",
+  "rol": "BUROCRATA",
+  "telefono": "+1234567890"
+}
+
+###
+
+### PASO 2: Crear perfil para usuario existente (usar ID del paso anterior)
+# @name createBurocrataProfile
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 1,
+  "nombre": "Amanda Waller",
+  "alias": "The Wall",
+  "origen": "A.R.G.U.S."
+}
+
+###
+
+##################################################
+### 2️⃣ CONSULTAS DE BURÓCRATAS
+##################################################
+
+### Listar todos los burócratas
+# @name getAllBurocratas
+GET http://localhost:3000/api/burocratas
+
+###
+
+### Obtener burócrata por ID
+# @name getBurocrataById
+GET http://localhost:3000/api/burocratas/1
+
+###
+
+### Obtener burócrata específico
+# @name getBurocrata2
+GET http://localhost:3000/api/burocratas/2
+
+###
+
+### Obtener carpetas de un burócrata
+# @name getCarpetasBurocrata
+GET http://localhost:3000/api/burocratas/1/carpetas
+
+###
+
+##################################################
+### 3️⃣ ACTUALIZAR BURÓCRATAS
+##################################################
+
+### Actualizar información de burócrata (PUT)
+# @name updateBurocrata
+PUT http://localhost:3000/api/burocratas/1
+Content-Type: application/json
+
+{
+  "nombre": "Amanda Waller",
+  "alias": "The Iron Wall",
+  "origen": "A.R.G.U.S. - Central Command"
+}
+
+###
+
+### Actualizar parcialmente (PATCH)
+# @name updateBurocrataPartial
+PATCH http://localhost:3000/api/burocratas/1
+Content-Type: application/json
+
+{
+  "alias": "Director Waller"
+}
+
+###
+
+##################################################
+### 4️⃣ EJEMPLOS ADICIONALES
+##################################################
+
+### PASO 1: Crear usuario para Nick Fury
+# @name createUserNF
+POST http://localhost:3000/api/usuarios/register
+Content-Type: application/json
+
+{
+  "nomUsuario": "nickfury",
+  "mail": "nick.fury@shield.gov",
+  "contrasena": "shieldsecret",
+  "rol": "BUROCRATA",
+  "telefono": "+9876543210"
+}
+
+###
+
+### PASO 2: Crear perfil de Nick Fury
+# @name createBurocrata2
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 2,
+  "nombre": "Nick Fury",
+  "alias": "Colonel Fury",
+  "origen": "S.H.I.E.L.D."
+}
+
+###
+
+### PASO 1: Crear usuario para otro burócrata
+# @name createUserBuro3
+POST http://localhost:3000/api/usuarios/register
+Content-Type: application/json
+
+{
+  "nomUsuario": "philipcoulson",
+  "mail": "phil.coulson@shield.gov",
+  "contrasena": "tahiti123",
+  "rol": "BUROCRATA",
+  "telefono": "+5555551234"
+}
+
+###
+
+### PASO 2: Crear perfil de Phil Coulson
+# @name createBurocrata3
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 3,
+  "nombre": "Phil Coulson",
+  "alias": "Agent Coulson",
+  "origen": "S.H.I.E.L.D."
+}
+
+###
+
+##################################################
+### 5️⃣ VALIDACIONES Y ERRORES
+##################################################
+
+### Intentar crear perfil para usuario inexistente (debe fallar)
+# @name errorUsuarioInexistente
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 999,
+  "nombre": "Usuario Falso",
+  "alias": "Fake Bureaucrat",
+  "origen": "Nowhere"
+}
+
+###
+
+### Intentar crear perfil sin campos obligatorios (debe fallar)
+# @name errorCamposObligatorios
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 1
+}
+
+###
+
+### Intentar crear perfil para usuario que ya tiene perfil (debe fallar)
+# @name errorPerfilDuplicado
+POST http://localhost:3000/api/burocratas
+Content-Type: application/json
+
+{
+  "usuarioId": 1,
+  "nombre": "Duplicate Test",
+  "alias": "Duplicate",
+  "origen": "Test"
+}
+
+###
+
+##################################################
+### 6️⃣ ELIMINAR BURÓCRATAS
+##################################################
+
+### Eliminar burócrata (usar con cuidado)
+# @name deleteBurocrata
+DELETE http://localhost:3000/api/burocratas/1
+
+###
